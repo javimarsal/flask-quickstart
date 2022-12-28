@@ -103,3 +103,43 @@ And this is the result on the command line when running the application:
 /login?next=%2F
 /user/John%20Doe
 ```
+
+## HTTP Methods
+
+Web applications use different HTTP methods when accessing URLs. You should familiarize yourself with the HTTP methods as you work with Flask. **By default**, a route only answers to `GET` requests. You can use the methods argument of the `route()` decorator to handle different HTTP methods.
+
+```python
+from flask import Flask, request
+
+# Instance of class Flask, the WSGI application
+app = Flask(__name__)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        return do_the_login()
+    else:
+        return show_the_login_form()
+
+def do_the_login():
+    return 'doing the login'
+
+def show_the_login_form():
+    return 'showing the login form'
+```
+
+The example above keeps all methods for the route within one function, which can be useful if each part uses some common data.
+
+You can also separate views for different methods into different functions. Flask provides a shortcut for decorating such routes with `get()`, `post()`, etc. for each common HTTP method.
+
+```python
+@app.get('/signup')
+def signup_get():
+    return show_the_login_form()
+
+@app.post('/signup')
+def signup_post():
+    return do_the_login()
+```
+
+If `GET` is present, Flask automatically adds support for the HEAD method and handles HEAD requests according to the [HTTP RFC](https://www.ietf.org/rfc/rfc2068.txt). Likewise, `OPTIONS` is automatically implemented for you.
